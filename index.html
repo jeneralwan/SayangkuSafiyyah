@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Fiya 🤍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --text-main: #2d1b2e; 
+    --text-muted: #83677b;
+    --sunset-coral: #f28b82; 
+    --sunset-peach: #fbbc04; 
+    --sunset-lavender: #c5a3ff;
+    --bg-base: #fff5f2;
+    --glass-bg: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --shadow-subtle: 0 12px 32px rgba(105, 92, 98, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body, html {
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+    background: var(--bg-base);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+  }
+
+  /* --- SUNSET AURORA BACKGROUND --- */
+  .aurora-bg {
+    position: fixed; inset: 0; z-index: -2;
+    background: linear-gradient(135deg, #fff0eb 0%, #ffecd2 50%, #fcb69f 100%);
+  }
+  .aurora-blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(100px); opacity: 0.6;
+    animation: drift 15s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .blob-1 { width: 50vw; height: 50vw; top: -10%; left: -10%; background: #ff9a9e; } 
+  .blob-2 { width: 40vw; height: 40vw; bottom: -20%; right: -10%; background: #fecfef; animation-delay: -5s; } 
+  .blob-3 { width: 45vw; height: 45vw; top: 30%; left: 40%; background: #e0c3fc; animation-delay: -10s; } 
+
+  @keyframes drift {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(40px, -30px) scale(1.1); }
+  }
+
+  /* --- FALLING PETALS --- */
+  .petal {
+    position: fixed; top: -10vh; z-index: -1;
+    background: var(--sunset-coral);
+    border-radius: 15px 0 15px 0;
+    opacity: 0.5; filter: blur(1px);
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.6; }
+    100% { transform: translate(100px, 110vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* --- TYPOGRAPHY --- */
+  h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 500; }
+  .script { font-family: 'Caveat', cursive; color: var(--sunset-coral); font-size: 2.4rem; line-height: 1.2; }
+  .subtitle { font-size: 1.1rem; color: var(--text-muted); font-weight: 400; line-height: 1.6; }
+
+  /* --- LIQUID GLASS CONTAINER --- */
+  .glass-container {
+    position: absolute; top: 3vh; left: 3vw; right: 3vw; bottom: 3vh;
+    background: var(--glass-bg); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+    border: 1px solid var(--glass-border); border-radius: 32px;
+    box-shadow: var(--shadow-subtle), inset 0 0 20px rgba(255,255,255,0.4);
+    overflow: hidden; display: flex;
+  }
+
+  /* Floral Corners */
+  .corner-flower { position: absolute; width: 120px; opacity: 0.25; pointer-events: none; z-index: 0; }
+  .flower-tl { top: -20px; left: -20px; transform: rotate(15deg); }
+  .flower-br { bottom: -20px; right: -20px; transform: rotate(195deg); }
+
+  /* --- SLIDESHOW MECHANICS --- */
+  .slide-track {
+    display: flex; width: 100%; height: 100%; z-index: 1;
+    transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  .slide {
+    flex: 0 0 100%; width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: clamp(1.5rem, 4vh, 3rem); 
+    position: relative; opacity: 0; transition: opacity 0.5s ease 0.3s;
+  }
+  .slide.active { opacity: 1; }
+
+  /* --- NAVIGATION CONTROLS --- */
+  .nav-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.7); border: 1px solid #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    opacity: 0; pointer-events: none; transition: all 0.3s ease; color: var(--sunset-coral);
+  }
+  .nav-btn:hover { background: #fff; transform: translateY(-50%) scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+  .nav-btn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-prev { left: 2rem; }
+  .nav-next { right: 2rem; }
+  .nav-btn.visible { opacity: 1; pointer-events: auto; }
+
+  /* --- COMMON WRAPPERS --- */
+  .content-wrapper { 
+    text-align: center; max-width: 650px; position: relative; 
+    background: rgba(255,255,255,0.5); padding: 3rem; border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.7); box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+  }
+  .slide-header { text-align: center; margin-bottom: 2rem; width: 100%; }
+  .slide-header h2 { font-size: 2.8rem; margin-top: 0.2rem; }
+  .hero-icon { width: 45px; height: 45px; margin-bottom: 1rem; color: var(--sunset-coral); animation: pulse 3s infinite ease-in-out; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+  /* --- SLIDE 0: QUESTION BUTTONS --- */
+  .buttons-row { 
+    position: relative; display: flex; justify-content: center; align-items: center; gap: 1.5rem; 
+    margin-top: 2rem; width: 100%; min-height: 60px;
+  }
+  
+  .btn-primary {
+    background: var(--text-main); color: #fff; border: none; padding: 1.1rem 2.8rem;
+    border-radius: 50px; font-size: 1rem; font-family: 'Inter', sans-serif; font-weight: 500;
+    cursor: pointer; box-shadow: 0 8px 20px rgba(45, 27, 46, 0.2); transition: all 0.3s ease; position: relative; z-index: 10;
+  }
+  .btn-primary:hover { background: var(--sunset-coral); transform: translateY(-3px); box-shadow: 0 12px 25px rgba(242, 139, 130, 0.3); }
+
+  #no-btn {
+    position: relative; 
+    background: rgba(255,255,255,0.9); color: var(--text-muted); border: 1px solid rgba(200,200,200,0.5);
+    padding: 1.1rem 2.8rem; border-radius: 50px; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 500;
+    cursor: pointer; z-index: 50;
+    transition: transform 0.1s, left 0.3s cubic-bezier(0.25, 1, 0.5, 1), top 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* --- SLIDE 1: INVITATION CARD --- */
+  .invite-card {
+    background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(255, 255, 255, 1);
+    border-radius: 24px; padding: clamp(1.5rem, 4vh, 3.5rem) clamp(1.5rem, 4vw, 3rem); 
+    max-width: 650px; width: 100%; max-height: 100%; 
+    overflow-y: auto; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.08); text-align: center;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .invite-card::-webkit-scrollbar { width: 6px; }
+  .invite-card::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); border-radius: 10px; }
+  .invite-card::-webkit-scrollbar-thumb { background: var(--sunset-coral); border-radius: 10px; }
+
+  .invite-card h2 { font-size: clamp(2.2rem, 5vw, 2.8rem); margin: 0.5rem 0 1rem; color: var(--text-main); line-height: 1.2; }
+  .invite-desc { font-size: 1.05rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 400; padding: 0 1rem;}
+  
+  .invite-details { 
+    display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; width: 100%; 
+    text-align: left; background: rgba(255,255,255,0.5); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.8);
+  }
+  .detail-item { display: flex; align-items: baseline; gap: 1rem; }
+  .detail-label { font-family: 'Playfair Display', serif; font-style: italic; color: var(--sunset-coral); font-size: 1.3rem; min-width: 60px; }
+  .detail-val { font-weight: 500; font-size: 1.05rem; color: var(--text-main); }
+  
+  /* Hold Button */
+  .btn-hold {
+    position: relative; overflow: hidden; background: rgba(255,255,255,0.9);
+    color: var(--text-main); border: 1px solid rgba(0,0,0,0.1); padding: 1.2rem 3rem;
+    border-radius: 50px; font-size: 1rem; font-weight: 500; cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05); user-select: none; -webkit-user-select: none;
+    margin-top: 0.5rem; margin-bottom: 1rem; width: 100%; max-width: 250px; flex-shrink: 0;
+  }
+  .btn-hold .fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: var(--sunset-coral); opacity: 0.9; z-index: 1; transition: opacity 0.3s; }
+  .btn-hold .text { position: relative; z-index: 2; transition: color 0.2s; }
+  .btn-hold:active { transform: scale(0.98); }
+
+  /* --- HORIZONTAL GALLERY --- */
+  .gallery-filmstrip {
+    display: flex; gap: 2rem; width: 100%; max-width: 1000px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 1rem 1rem 3rem 1rem; scroll-behavior: smooth;
+  }
+  .gallery-filmstrip::-webkit-scrollbar { height: 8px; }
+  .gallery-filmstrip::-webkit-scrollbar-track { background: rgba(0,0,0,0.03); border-radius: 10px; }
+  .gallery-filmstrip::-webkit-scrollbar-thumb { background: rgba(242, 139, 130, 0.5); border-radius: 10px; }
+  
+  .photo-card {
+    scroll-snap-align: center; flex: 0 0 300px;
+    background: rgba(255, 255, 255, 0.85); padding: 0.75rem 0.75rem 1.5rem; border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.9);
+    transition: transform 0.4s ease; display: flex; flex-direction: column;
+  }
+  .photo-card:hover { transform: translateY(-10px) scale(1.02); z-index: 10; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+  .photo-card img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 8px; flex: 1; }
+  .photo-card p { font-family: 'Caveat', cursive; font-size: 1.6rem; text-align: center; margin-top: 0.8rem; color: var(--text-main); }
+
+  /* --- VIDEO --- */
+  .video-container { width: 100%; max-width: 900px; aspect-ratio: 16/9; border-radius: 20px; overflow: hidden; background: #000; box-shadow: 0 15px 40px rgba(0,0,0,0.15); border: 2px solid rgba(255,255,255,0.7); }
+  .video-container video { width: 100%; height: 100%; object-fit: cover; }
+  
+  /* --- NOTES GRID --- */
+  .notes-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; max-width: 950px; }
+  .glass-note {
+    width: 260px; min-height: 150px; padding: 2rem 1.5rem;
+    background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.9); border-radius: 20px; cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.03); font-family: 'Caveat', cursive; font-size: 1.7rem; line-height: 1.2;
+    display: flex; align-items: center; justify-content: center; text-align: center; transition: all 0.3s ease; position: relative;
+  }
+  .glass-note::after { content: "Tap to open ✨"; position: absolute; bottom: 12px; font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--sunset-coral); opacity: 0; transition: 0.3s; }
+  .glass-note:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.9); box-shadow: 0 15px 35px rgba(0,0,0,0.08); border-color: var(--sunset-coral); }
+  .glass-note:hover::after { opacity: 1; }
+
+  /* --- MODAL FOR IMG OR VIDEO --- */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.4); backdrop-filter: blur(15px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
+  .modal-content { background: #fff; padding: 1rem 1rem 2rem; border-radius: 16px; max-width: 450px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.15); transform: translateY(20px) scale(0.95); transition: all 0.4s ease; text-align: center; position: relative; }
+  .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+  
+  .modal-media { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 12px; margin-bottom: 1.5rem; display: none; }
+  .modal-media.show { display: block; }
+  
+  .modal-text { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--text-main); font-style: italic; line-height: 1.4; padding: 0 1rem; }
+  .close-modal { position: absolute; top: -15px; right: -15px; width: 40px; height: 40px; background: var(--text-main); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+  /* --- LETTER CUTOUT SCROLL --- */
+  .letter-container {
+    background: rgba(255,255,255,0.7); border-radius: 24px; border: 1px solid rgba(255,255,255,0.9);
+    padding: 3rem; max-width: 800px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.05); position: relative;
+  }
+  .letter-container::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 40px; background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, transparent 100%); border-radius: 24px 24px 0 0; z-index: 2; pointer-events: none;}
+  .letter-container::after { content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(to top, rgba(255,255,255,0.9) 0%, transparent 100%); border-radius: 0 0 24px 24px; z-index: 2; pointer-events: none;}
+  
+  .letter-scroll {
+    max-height: 45vh; overflow-y: auto; padding: 2rem 2.5rem 2rem 0;
+    font-size: 1.15rem; line-height: 1.8; color: var(--text-main); position: relative;
+  }
+  .letter-scroll::-webkit-scrollbar { width: 6px; }
+  .letter-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); border-radius: 10px; }
+  .letter-scroll::-webkit-scrollbar-thumb { background: var(--sunset-coral); border-radius: 10px; }
+  .letter-scroll p { margin-bottom: 1.5rem; text-align: justify; }
+  .letter-signature { font-family: 'Caveat', cursive; font-size: 2.5rem; color: var(--sunset-coral); margin-top: 3rem; text-align: right; }
+
+</style>
+</head>
+<body>
+
+<div class="aurora-bg"></div>
+<div class="aurora-blob blob-1"></div>
+<div class="aurora-blob blob-2"></div>
+<div class="aurora-blob blob-3"></div>
+
+<div id="petals-container"></div>
+
+<div class="glass-container">
+  
+  <!-- Corner Floral SVGs -->
+  <svg class="corner-flower flower-tl" viewBox="0 0 100 100">
+    <path fill="var(--sunset-coral)" d="M50 0 C60 20 80 40 100 50 C80 60 60 80 50 100 C40 80 20 60 0 50 C20 40 40 20 50 0 Z"/>
+    <circle cx="50" cy="50" r="10" fill="var(--sunset-peach)"/>
+  </svg>
+  <svg class="corner-flower flower-br" viewBox="0 0 100 100">
+    <path fill="var(--sunset-coral)" d="M50 0 C60 20 80 40 100 50 C80 60 60 80 50 100 C40 80 20 60 0 50 C20 40 40 20 50 0 Z"/>
+    <circle cx="50" cy="50" r="10" fill="var(--sunset-peach)"/>
+  </svg>
+
+  <div class="nav-btn nav-prev" id="btn-prev" onclick="moveSlide(-1)">
+    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+  </div>
+  <div class="nav-btn nav-next" id="btn-next" onclick="moveSlide(1)">
+    <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+
+  <div class="slide-track" id="track">
+    
+    <!-- SLIDE 0: QUESTION -->
+    <div class="slide active">
+      <div class="content-wrapper" id="question-card">
+        <svg class="hero-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C8.5 2 5 4.5 5 8.5C5 12.5 8 16 12 21C16 16 19 12.5 19 8.5C19 4.5 15.5 2 12 2ZM12 11C10.3 11 9 9.7 9 8C9 6.3 10.3 5 12 5C13.7 5 15 6.3 15 8C15 9.7 13.7 11 12 11Z"/>
+        </svg>
+        <div class="script">Happy Birthday, my beautiful Angel</div>
+        <h1 style="font-size: clamp(2.2rem, 4vw, 3.5rem); margin: 0.5rem 0 1.5rem; line-height: 1.1;">Will you go on a birthday date with me, sayang?</h1>
+        <p class="subtitle" id="subtitle-text">Take your time. Or don't — I already know what I'm hoping you'll say.</p>
+        
+        <div class="buttons-row">
+          <button class="btn-primary" id="yes-btn">Yes, I'd love to 🤍</button>
+          <button id="no-btn">No</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 1: INVITATION CARD -->
+    <div class="slide">
+      <div class="invite-card">
+         <p class="script" style="font-size: clamp(1.8rem, 3vw, 2.2rem); margin-bottom: 0.5rem;">you are cordially, hopelessly invited to</p>
+         <h2>A Birthday Date with Sayang</h2>
+         <p class="invite-desc">One day, just the two of us, time is at the morning of this amazing day. No agenda except being together and consider the rest a surprise I've been looking forward to for weeks.</p>
+         
+         <div class="invite-details">
+            <div class="detail-item"><span class="detail-label">when</span> <span class="detail-val">Friday, September 11th</span></div>
+            <div class="detail-item"><span class="detail-label">time</span> <span class="detail-val">a whole day</span></div>
+            <div class="detail-item"><span class="detail-label">where</span> <span class="detail-val">a surprise - just bring yourself</span></div>
+            <div class="detail-item"><span class="detail-label">wear</span> <span class="detail-val">something you love, comfortable shoes</span></div>
+         </div>
+         <p class="script" style="font-size: clamp(1.6rem, 2.5vw, 1.8rem); margin-bottom: 1rem;">Save the date. I've been counting the days.</p>
+         
+         <button class="btn-hold" id="hold-btn">
+          <div class="fill" id="hold-fill"></div>
+          <span class="text" id="hold-text">Hold to Open 💌</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: HORIZONTAL FILMSTRIP GALLERY -->
+    <div class="slide">
+      <div class="slide-header">
+        <div class="script">Spoiler alert: it's literally just you</div>
+        <h2>My Favorite Views</h2>
+      </div>
+      <div class="gallery-filmstrip">
+        <div class="photo-card"><img src="1.jpg" alt="Photo"><p>that smile</p></div>
+                <div class="photo-card"><img src="2.jpg" alt="Photo"><p>us, laughing</p></div>
+                <div class="photo-card"><img src="3.jpg" alt="Photo"><p>my safe space</p></div>
+                <div class="photo-card"><img src="4.jpg" alt="Photo"><p>a perfect day</p></div>
+                <div class="photo-card"><img src="5.jpg" alt="Photo"><p>so beautiful</p></div>
+                <div class="photo-card"><img src="6.jpg" alt="Photo"><p>my favorite person</p></div>
+                <div class="photo-card"><img src="7.jpg" alt="Photo"><p>unforgettable</p></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: VIDEO -->
+    <div class="slide">
+      <div class="slide-header">
+        <div class="script">Happy Birthday, Sayang!</div>
+        <h2>Some of my unforgettable moments captured</h2>
+      </div>
+      <div class="video-container">
+        <!-- Add your Memory Video link here -->
+        <video id="memory-video" controls poster="https://placehold.co/1280x720/2d1b2e/ffffff?text=Your+Aesthetic+Video">
+          <source src="WISH.MOV" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: ROMANTIC INTERACTIVE NOTES -->
+    <div class="slide">
+      <div class="slide-header">
+        <div class="script">I ran out of space before I ran out of reasons</div>
+        <h2>Why I'm So Lucky</h2>
+      </div>
+      <div class="notes-grid">
+  <div class="glass-note" onclick="openModal('smile.mov', 'It\'s my absolute favorite sight in the world. I could get lost in your eyes forever.', 'video')">The way your eyes light up when you smile</div>
+  
+  <div class="glass-note" onclick="openModal('magic.mov', 'Even doing absolutely nothing with you feels like the best day of my life.', 'video')">How you make ordinary days feel like magic</div> 
+  
+  <div class="glass-note" onclick="openModal('laugh.mov', 'It\'s the sweetest melody I\'ve ever heard. Hearing it instantly makes my whole day better.', 'video')">Your incredibly cute and infectious laugh</div>
+  
+  <div class="glass-note" onclick="openModal('safe.mov', 'Whenever you hold me, the whole world quiets down and I feel like I\'m exactly where I belong.', 'video')">How you make me feel safe and loved</div>
+  
+  <div class="glass-note" onclick="openModal('reason.mov', 'The day we first met I didn\'t expect us to be happily together', 'video')">The Reason we met</div>
+  
+  <div class="glass-note" onclick="openModal('time.mov', 'The first time we go out together and see you happy, I want to bring you to all the places we can go together.', 'video')">How i want to spend time with you</div>
+</div>
+    </div>
+
+    <!-- SLIDE 5: CUTOUT SCROLL LETTER -->
+    <div class="slide">
+      <div class="slide-header" style="margin-bottom: 1.5rem;">
+        <div class="script">Everything I wanted to say</div>
+        <h2>Happy Birthday, Angel</h2>
+      </div>
+      
+      <div class="letter-container">
+        <div class="letter-scroll">
+          <p>Happy Birthday, my beautiful Angel.</p>
+          <p>I wanted to make you something incredibly special instead of just saying it out loud because my heart is overflowing with so much I have been meaning to tell you. You are, without a single doubt, the greatest gift life has ever entrusted to me. Today isn't just about celebrating the day you were born, it is about celebrating the absolute masterpiece that you are, and the profound way you have changed my entire world simply by existing. I look at you and still can't quite believe that someone as incredible as you is real, let alone mine to love.</p>
+          <p>From the exact moment you came into my life, everything just began to make sense. It was as if I had been navigating in the dark, and you suddenly turned on the light. Colors seem brighter, days feel infinitely warmer, and even the most ordinary, mundane moments suddenly hold a kind of magic I never knew existed before you. You have this beautiful, effortless way of lighting up every space you walk into, not just with your breathtaking smile, but with your kind, gentle, and incredibly pure heart. You carry a warmth that instantly melts away all my worries, making every heavy day feel infinitely lighter just by being near you.</p>
+          <p>It isn't just the big, cinematic milestone moments I keep replaying in my mind. It is the beautiful, quiet, in between ones that I treasure the most. The peaceful car rides where we are just vibing to music, sharing glances that say more than a thousand words ever could. The late night talks where the rest of the world fades away, where we completely lose track of time just dreaming and laughing together. And those soft, quiet seconds where I just look at you, completely lost in your eyes, and realize how unimaginably lucky I am. In those fleeting seconds, I find my forever. My favorite place in the entire world isn't a physical destination, it is simply wherever you are.</p>
+          <p>Loving you is the easiest, most natural thing I have ever done. I love the way your eyes light up when you get quietly excited about the things you care about. I love your infectious laugh, it is my absolute favorite sound in the universe, a melody that brings me instant peace. I love the raw, real version of you that shows up on ordinary days, unfiltered, genuine, and so effortlessly gorgeous without even trying. I admire your strength, your grace, and the deep well of compassion you have for everyone around you. You are my best friend, my anchor, and my greatest inspiration.</p>
+          <p>As we celebrate you today, I want to make you a lifelong promise. I want to keep choosing you, every single day. I promise to keep showing up, to listen fiercely, and to be here for you through absolutely everything life throws our way. I promise to keep learning the exact pitch of your laugh, to memorize what brings you comfort on a hard day, and to always, always be the safe harbor you can run to when the world gets too loud or overwhelming. I promise to hold your hand through every soaring high and every difficult low, and to remind you, every single day, just how incredibly cherished, respected, and deeply loved you are.</p>
+          <p>When I look into your eyes, I do not just see the love of my life right now, I see my entire future. I dream of the day I get to stand in front of our loved ones and finally call you my wife. I picture a beautiful, warm home filled with so much love, growing old by your side, and watching our future kids run around with your gorgeous smile and your kind heart. Building a family and sharing a wonderful, peaceful life with you is my greatest dream. Knowing that I get to build that future with you makes me the happiest man alive.</p>
+          <p>Thank you for saying yes to this birthday date. Thank you for trusting me with your beautiful heart, for caring for me with such unimaginable tenderness, and for being exactly, unapologetically who you are. You make my life so infinitely better, Fiya, just by letting me share it with you. I promise to spend my days making sure this birthday, and every single day that follows, is the absolute best one yet.</p>
+          <p>I love you more than words, actions, or any language could ever truly express. You mean the entire universe to me, sayang. Happy Birthday.</p>
+          <div class="letter-signature">Love always,<br>Wan Hafiy</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Custom Modal for Images and Videos -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-content" id="modal-box">
+    <div class="close-modal" onclick="closeModal(event)">×</div>
+    
+    <img src="" id="modal-img" class="modal-media" alt="Memory">
+    <video src="" id="modal-vid" class="modal-media" controls autoplay loop playsinline></video>
+    
+    <p class="modal-text" id="modal-text"></p>
+  </div>
+</div>
+
+<!-- Hidden Background Audio (Replace source with your romantic song) -->
+<audio id="bg-audio" loop>
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  // --- Create Falling Petals ---
+  function createPetals() {
+    const container = document.getElementById('petals-container');
+    const petalCount = 18;
+    for (let i = 0; i < petalCount; i++) {
+      let petal = document.createElement('div');
+      petal.classList.add('petal');
+      let size = Math.random() * 15 + 10;
+      petal.style.width = size + 'px';
+      petal.style.height = size + 'px';
+      petal.style.left = Math.random() * 100 + 'vw';
+      petal.style.animationDuration = Math.random() * 10 + 10 + 's';
+      petal.style.animationDelay = Math.random() * 15 + 's';
+      container.appendChild(petal);
+    }
+  }
+  createPetals();
+
+  // --- Slideshow Logic ---
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  const track = document.getElementById('track');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  let slideshowActive = false;
+
+  function updateSlideshow() {
+    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    slides.forEach((slide, index) => {
+      slide.classList.toggle('active', index === currentSlide);
+    });
+    
+    if (slideshowActive) {
+      btnPrev.classList.toggle('visible', currentSlide > 1); 
+      btnNext.classList.toggle('visible', currentSlide < totalSlides - 1);
+    }
+  }
+
+  function moveSlide(dir) {
+    currentSlide += dir;
+    if (currentSlide < 1) currentSlide = 1; 
+    if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+    updateSlideshow();
+  }
+
+  // Handle Play/Pause logic between background audio and memory video
+  const bgAudio = document.getElementById('bg-audio');
+  const memoryVideo = document.getElementById('memory-video');
+
+  if (memoryVideo && bgAudio) {
+    memoryVideo.addEventListener('play', () => { bgAudio.pause(); });
+    memoryVideo.addEventListener('pause', () => { bgAudio.play(); });
+    memoryVideo.addEventListener('ended', () => { bgAudio.play(); });
+  }
+
+  function startSlideshow() {
+    currentSlide = 2; // Move past the invitation card
+    slideshowActive = true;
+    updateSlideshow();
+
+    // Start background audio when "Hold to Open" completes
+    if (bgAudio) {
+      bgAudio.volume = 0.5; // Optional: lower volume a bit so it's pleasant background noise
+      bgAudio.play().catch(e => console.log("Audio autoplay blocked by browser:", e));
+    }
+  }
+
+  // --- Modal Logic (Handles Image OR Video) ---
+  function openModal(mediaSrc, text, type = 'image') {
+    const imgEl = document.getElementById('modal-img');
+    const vidEl = document.getElementById('modal-vid');
+    
+    if (type === 'video') {
+      imgEl.classList.remove('show');
+      vidEl.classList.add('show');
+      vidEl.src = mediaSrc;
+      
+      // Pause background music if it's playing
+      if (bgAudio) bgAudio.pause();
+      
+      vidEl.play().catch(e => console.log("Video autoplay prevented by browser"));
+    } else {
+      vidEl.classList.remove('show');
+      imgEl.classList.add('show');
+      imgEl.src = mediaSrc;
+    }
+    
+    document.getElementById('modal-text').innerText = text;
+    document.getElementById('modal').classList.add('active');
+  }
+
+  function closeModal(e) {
+    if(e.target.id === 'modal' || e.target.classList.contains('close-modal')){
+      document.getElementById('modal').classList.remove('active');
+      
+      const vidEl = document.getElementById('modal-vid');
+      vidEl.pause();
+      vidEl.src = '';
+      document.getElementById('modal-img').src = '';
+      
+      // Resume background music when closing modal (if on a slide where it should play)
+      if (bgAudio && currentSlide > 1 && memoryVideo.paused) {
+        bgAudio.play().catch(err => console.log(err));
+      }
+    }
+  }
+
+  // --- "Hold to Open" Button Logic ---
+  const holdBtn = document.getElementById('hold-btn');
+  const holdFill = document.getElementById('hold-fill');
+  const holdText = document.getElementById('hold-text');
+  let holdTimer;
+  let progress = 0;
+
+  function resetHold() {
+    cancelAnimationFrame(holdTimer);
+    progress = 0;
+    holdFill.style.width = '0%';
+    holdText.style.color = 'var(--text-main)';
+    holdText.innerText = 'Hold to Open 💌';
+  }
+
+  function fillHold() {
+    progress += 1.2; 
+    holdFill.style.width = progress + '%';
+    if(progress > 50) holdText.style.color = '#fff'; 
+    
+    if(progress >= 100) {
+      holdText.innerText = 'Opening...';
+      setTimeout(startSlideshow, 300);
+      resetHold();
+      return;
+    }
+    holdTimer = requestAnimationFrame(fillHold);
+  }
+
+  const startHoldEvent = (e) => { 
+    if(e.type === 'touchstart') e.preventDefault();
+    cancelAnimationFrame(holdTimer); 
+    holdTimer = requestAnimationFrame(fillHold); 
+  };
+
+  holdBtn.addEventListener('mousedown', startHoldEvent);
+  holdBtn.addEventListener('touchstart', startHoldEvent);
+  window.addEventListener('mouseup', resetHold);
+  holdBtn.addEventListener('mouseleave', resetHold);
+  window.addEventListener('touchend', resetHold);
+
+  // --- "Yes" / "No" Strict Infinite Evasion Logic ---
+  const yesBtn = document.getElementById('yes-btn');
+  const noBtn = document.getElementById('no-btn');
+  const subtitle = document.getElementById('subtitle-text');
+  const qCard = document.getElementById('question-card');
+  let dodgeCount = 0;
+  let isAbsolute = false;
+  
+  const teaseMessages = [
+    "Oops, missed it.", 
+    "Nice try, sayang. 🤍", 
+    "You're stuck with me.", 
+    "Just click yes. ✨",
+    "Still missing! 🤭",
+    "I can do this all day...",
+    "Don't you want to see the surprise? 🥺",
+    "Okay, now you're just playing with me!",
+    "Just say YES already! 💖",
+    "I'll never let you click this."
+  ];
+
+  yesBtn.addEventListener('click', () => {
+    currentSlide = 1; 
+    updateSlideshow();
+  });
+
+  function dodge(e) {
+    if(e) e.preventDefault(); 
+    dodgeCount++;
+    
+    if(!isAbsolute) {
+      noBtn.style.position = 'absolute';
+      isAbsolute = true;
+    }
+    
+    const btnW = noBtn.offsetWidth; 
+    const btnH = noBtn.offsetHeight;
+    const padding = 20;
+    const yesPad = 80; 
+    
+    const cardRect = qCard.getBoundingClientRect();
+    const minX = padding; 
+    const maxX = cardRect.width - btnW - padding;
+    const minY = padding; 
+    const maxY = cardRect.height - btnH - padding;
+    
+    const yesRect = yesBtn.getBoundingClientRect();
+    const yesLeft = yesRect.left - cardRect.left;
+    const yesRight = yesRect.right - cardRect.left;
+    const yesTop = yesRect.top - cardRect.top;
+    const yesBottom = yesRect.bottom - cardRect.top;
+    
+    let newX, newY, isOverlapping = true, attempts = 0;
+    
+    while (isOverlapping && attempts < 200) {
+      newX = Math.random() * (maxX - minX) + minX;
+      newY = Math.random() * (maxY - minY) + minY;
+      
+      isOverlapping = !(
+        newX + btnW + yesPad < yesLeft || 
+        newX - yesPad > yesRight ||       
+        newY + btnH + yesPad < yesTop ||  
+        newY - yesPad > yesBottom         
+      );
+      attempts++;
+    }
+    
+    noBtn.style.left = newX + 'px';
+    noBtn.style.top = newY + 'px';
+
+    const growth = Math.min(dodgeCount * 0.1, 1.0); 
+    yesBtn.style.transform = `scale(${1 + growth})`;
+
+    const msg = teaseMessages[dodgeCount % teaseMessages.length];
+    subtitle.style.opacity = 0;
+    setTimeout(() => { subtitle.textContent = msg; subtitle.style.opacity = 1; }, 150);
+  }
+
+  noBtn.addEventListener('mousedown', dodge);
+  noBtn.addEventListener('touchstart', dodge, {passive: false});
+  noBtn.addEventListener('click', dodge);
+
+</script>
+
+</body>
+</html>
